@@ -5,7 +5,7 @@
     "installCommand": "npm install --prefix server",
     "rewrites": [
         {
-            "source": "/api/(.*)",
+            "source": "/api/:path*",
             "destination": "/api"
         }
     ]

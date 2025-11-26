@@ -31,7 +31,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/api', roastRoutes);
+app.use('/', roastRoutes);
 
 // 404 handler
 app.use((req, res) => {
