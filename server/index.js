@@ -24,8 +24,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes (mounted under /api for Vercel)
-app.get('/api/health', (req, res) => {
+// Routes
+app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     message: 'Spotify Playlist Roaster API is running',
@@ -33,7 +33,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.use('/api', roastRoutes);
+app.use('/', roastRoutes);
 
 // 404 handler
 app.use((req, res) => {
