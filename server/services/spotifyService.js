@@ -9,19 +9,31 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
+// Track authentication state
+let tokenExpiresAt = 0;
+
 // Authenticate with Spotify using client credentials
 async function authenticate() {
   try {
     const data = await spotifyApi.clientCredentialsGrant();
     spotifyApi.setAccessToken(data.body['access_token']);
     
-    // Refresh token before it expires (expires in 1 hour)
-    setTimeout(authenticate, (data.body['expires_in'] - 60) * 1000);
+    // Store when token expires (in milliseconds)
+    tokenExpiresAt = Date.now() + (data.body['expires_in'] * 1000);
     
     console.log('✅ Spotify API authenticated successfully');
+    return true;
   } catch (error) {
     console.error('❌ Error authenticating with Spotify:', error.message);
     throw error;
+  }
+}
+
+// Ensure we have a valid token
+async function ensureAuthenticated() {
+  // If token doesn't exist or is about to expire (within 5 minutes), refresh it
+  if (!tokenExpiresAt || Date.now() >= (tokenExpiresAt - 5 * 60 * 1000)) {
+    await authenticate();
   }
 }
 
@@ -43,6 +55,9 @@ function extractPlaylistId(url) {
 // Get playlist details and tracks
 export async function getPlaylistDetails(playlistUrl) {
   try {
+    // Ensure we have a valid Spotify token
+    await ensureAuthenticated();
+    
     const playlistId = extractPlaylistId(playlistUrl);
     
     // Get playlist information
@@ -94,9 +109,6 @@ export async function getPlaylistDetails(playlistUrl) {
     throw new Error('Failed to fetch playlist details from Spotify');
   }
 }
-
-// Initialize authentication on module load
-authenticate();
 
 export default {
   getPlaylistDetails,
