@@ -1,5 +1,5 @@
 {
-    "buildCommand": "npm install --prefix client && npm run build --prefix client && npm install --prefix server",
+    "buildCommand": "cd client && npm install && npm run build && cd ../server && npm install",
     "outputDirectory": "client/dist",
     "installCommand": "echo 'Dependencies installed via buildCommand'",
     "devCommand": "cd client && npm run dev",
