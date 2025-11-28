@@ -21,6 +21,9 @@ app.use(express.json());
 // Request logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Full URL:', req.url);
+  console.log('Original URL:', req.originalUrl);
+  console.log('Base URL:', req.baseUrl);
   next();
 });
 
